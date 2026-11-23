@@ -1,0 +1,333 @@
+/* =========================================================
+   CATEGORIES — floating cards around a pizza blob
+   ========================================================= */
+.cats {
+  position: relative;
+  padding: clamp(48px, 5vw, 80px) 24px;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 45% 60% at 0% 0%, rgba(255, 255, 255, 0.45), transparent 70%),
+    linear-gradient(160deg, #d9edc2, var(--color-sage));
+}
+
+.cats__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+/* ---------- Header ---------- */
+.cats__head {
+  display: flex;
+  align-items: flex-start; /* heading sits level with the intro text, button hangs below */
+  justify-content: space-between;
+  gap: 32px;
+}
+
+.cats__title {
+  margin: 0;
+  font-family: var(--font-display), var(--font-poppins), sans-serif;
+  font-size: clamp(1.7rem, 2.6vw, 2.5rem);
+  white-space: nowrap; /* one line on desktop */
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--color-forest-dark);
+}
+.cats__title span {
+  color: var(--color-forest);
+  background: linear-gradient(transparent 62%, rgba(245, 193, 46, 0.55) 62%, rgba(245, 193, 46, 0.55) 90%, transparent 90%);
+}
+
+.cats__intro {
+  max-width: 340px;
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: rgba(10, 58, 40, 0.75);
+}
+
+/* ---------- Stage ---------- */
+.cats__stage {
+  --card-w: 160px;
+  --card-h: 172px;
+  --rx: 380px; /* horizontal radius of the ring the cards sit on */
+  --ry: 260px; /* vertical radius */
+  --pizza: 350px; /* pizza circle diameter */
+  position: relative;
+  max-width: 1040px;
+  /* tall enough for the top and bottom cards (at ±60° they sit 0.866·ry from the centre) */
+  height: calc(var(--ry) * 1.732 + var(--card-h) + 16px);
+  margin: 24px auto 0;
+}
+
+/* Dashed ring linking the cards */
+.cats__ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--rx) * 2);
+  height: calc(var(--ry) * 2);
+  border: 2px dashed rgba(15, 77, 53, 0.22);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* Round pizza in the middle */
+.cats__blob {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--pizza);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #1b1410;
+  box-shadow:
+    0 0 0 10px rgba(255, 255, 255, 0.85),
+    0 0 0 22px rgba(255, 255, 255, 0.3),
+    0 30px 60px rgba(10, 58, 40, 0.3);
+  transform: translate(-50%, -50%);
+}
+.cats__blob-img {
+  object-fit: cover;
+  transform: scale(1.12);
+  transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.cats__stage:hover .cats__blob-img {
+  transform: scale(1.18) rotate(-6deg);
+}
+
+/* ---------- Floating cards ---------- */
+.cats__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cats__item {
+  position: absolute;
+  z-index: 2;
+  /* centre of the card sits on the ring at its angle */
+  left: calc(50% + var(--rx) * var(--cos) - var(--card-w) / 2);
+  top: calc(50% + var(--ry) * var(--sin) - var(--card-h) / 2);
+  width: var(--card-w);
+  animation: cats-float 6s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -1s);
+}
+@keyframes cats-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+
+.cat {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: var(--card-h);
+  padding: 20px 14px 18px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 16px 34px rgba(10, 58, 40, 0.14);
+  text-align: center;
+  text-decoration: none;
+  color: var(--color-ink);
+
+  /* pop in on scroll */
+  opacity: 0;
+  transform: translateY(24px) scale(0.85);
+  transition:
+    opacity 0.6s ease calc(var(--i) * 90ms),
+    transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--i) * 90ms),
+    box-shadow 0.3s ease;
+}
+.cats--visible .cat {
+  opacity: 1;
+  transform: none;
+}
+.cats--visible .cat:hover,
+.cats--visible .cat:focus-visible {
+  transform: translateY(-6px) scale(1.04);
+  box-shadow: 0 24px 44px rgba(10, 58, 40, 0.22);
+  transition-delay: 0s;
+}
+.cat:focus-visible {
+  outline: 3px solid var(--color-mustard);
+  outline-offset: 3px;
+}
+
+.cat__icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 70px;
+  height: 70px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, #fff, #eef6e4);
+  box-shadow: inset 0 0 0 1px rgba(15, 77, 53, 0.08);
+}
+.cat__icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.35);
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.cat:hover .cat__icon-img {
+  transform: scale(1.5) rotate(-10deg);
+}
+
+.cat__name {
+  margin-top: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.cat__count {
+  margin-top: auto;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.cat__arrow {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--color-mustard);
+  color: var(--color-forest-dark);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.cat:hover .cat__arrow,
+.cat:focus-visible .cat__arrow {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- View all ---------- */
+.cats__side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.cats__all {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: 999px;
+  background: var(--color-forest);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 14px 30px rgba(15, 77, 53, 0.3);
+  transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+}
+.cats__all svg {
+  transition: transform 0.25s ease;
+}
+.cats__all:hover {
+  transform: translateY(-2px);
+  background: var(--color-mustard);
+  color: var(--color-forest-dark);
+}
+.cats__all:hover svg {
+  transform: translateX(4px);
+}
+
+/* ---------- Medium screens ---------- */
+@media (max-width: 1100px) {
+  .cats__stage {
+    --card-w: 140px;
+    --card-h: 160px;
+    --rx: 320px;
+    --ry: 240px;
+    --pizza: 290px;
+  }
+  .cat__icon {
+    width: 62px;
+    height: 62px;
+  }
+  .cat__name {
+    font-size: 14px;
+  }
+}
+
+/* ---------- Tablet / phone: blob on top, cards in a grid ---------- */
+@media (max-width: 900px) {
+  .cats {
+    padding: 48px 16px;
+  }
+  .cats__container {
+    padding: 0;
+  }
+  .cats__head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .cats__stage {
+    height: auto;
+    margin-top: 24px;
+  }
+
+  .cats__title {
+    white-space: normal;
+  }
+
+  .cats__ring {
+    display: none;
+  }
+  .cats__blob {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: min(300px, 78%);
+    margin: 12px auto 0;
+    transform: none;
+  }
+
+  .cats__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    margin-top: 36px;
+  }
+  .cats__item {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: auto;
+    animation: none;
+  }
+  .cat {
+    height: 100%;
+    min-height: 160px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cats__blob,
+  .cats__item {
+    animation: none;
+  }
+  .cat {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

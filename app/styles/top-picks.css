@@ -1,0 +1,362 @@
+/* =========================================================
+   TOP PICKS — card slider (3 visible on desktop, 2 tablet, 1 phone)
+   ========================================================= */
+.picks {
+  position: relative;
+  padding: clamp(44px, 5vw, 72px) clamp(24px, 8vw, 160px);
+  background: #fff;
+}
+
+.picks__container {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+/* ---------- Header ---------- */
+.picks__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.picks__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(15, 77, 53, 0.08);
+  color: var(--color-forest);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.picks__eyebrow svg {
+  color: var(--color-mustard);
+}
+
+.picks__title {
+  margin: 12px 0 0;
+  font-family: var(--font-display), var(--font-poppins), sans-serif;
+  font-size: clamp(1.9rem, 3vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--color-ink);
+  isolation: isolate;
+}
+.picks__title span {
+  position: relative;
+  color: var(--color-forest);
+}
+.picks__title span::after {
+  content: "";
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  bottom: 0.06em;
+  height: 0.28em;
+  border-radius: 999px;
+  background: rgba(245, 193, 46, 0.5);
+  z-index: -1;
+}
+
+.picks__nav {
+  display: flex;
+  gap: 10px;
+}
+.picks__arrow {
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(15, 77, 53, 0.2);
+  background: #fff;
+  color: var(--color-forest);
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+.picks__arrow:hover {
+  border-color: var(--color-forest);
+  background: var(--color-forest);
+  color: #fff;
+  transform: scale(1.06);
+}
+.picks__arrow--next {
+  border-color: var(--color-forest);
+  background: var(--color-forest);
+  color: #fff;
+}
+.picks__arrow--next:hover {
+  border-color: var(--color-mustard);
+  background: var(--color-mustard);
+  color: var(--color-forest-dark);
+}
+
+/* ---------- Track (native scroll + snap, so touch swiping just works) ---------- */
+.picks__track {
+  --gap: 24px;
+  --per-view: 3;
+  display: flex;
+  column-gap: var(--gap);
+  /* room above for the dishes that pop out of the cards, and below for the hover shadow */
+  padding: 68px 4px 32px;
+  margin: 0 -4px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.picks__track::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---------- Card ---------- */
+.pick {
+  --tint: var(--color-sage);
+  position: relative;
+  flex: 0 0 calc((100% - var(--gap) * (var(--per-view) - 1)) / var(--per-view));
+  display: flex;
+  flex-direction: column;
+  scroll-snap-align: start;
+  container-type: inline-size; /* lets the image area size itself from the card width (cqi) */
+  border-radius: 24px;
+  background: var(--color-surface);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, background 0.4s ease;
+}
+.pick:hover {
+  transform: translateY(-6px);
+  background: #fff;
+  box-shadow: 0 24px 48px rgba(26, 26, 26, 0.1);
+}
+
+.pick__media {
+  position: relative;
+  height: 46cqi; /* dish is ~67cqi tall, so roughly a fifth of it pops above the card */
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+/* Coloured disc that the dish sits on */
+.pick__disc {
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  width: 74%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, #fff 0%, var(--tint) 62%);
+  transform: translateX(-50%);
+  opacity: 0.9;
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Dish image floats up out of the card */
+.pick__img {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  width: 100%;
+  max-width: none;
+  height: auto;
+  margin-bottom: -14px;
+  filter: drop-shadow(0 22px 22px rgba(0, 0, 0, 0.22));
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.pick:hover .pick__img {
+  transform: translateY(-10px) rotate(-4deg) scale(1.05);
+}
+.pick:hover .pick__disc {
+  transform: translateX(-50%) scale(1.08);
+}
+
+.pick__rank,
+.pick__rating {
+  position: absolute;
+  top: 14px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.pick__rank {
+  left: 14px;
+  background: var(--color-forest);
+  color: #fff;
+}
+.pick__rating {
+  right: 14px;
+  background: #fff;
+  color: var(--color-ink);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+}
+.pick__rating svg {
+  color: var(--color-mustard);
+}
+
+/* ---------- Body ---------- */
+.pick__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 26px 20px 20px;
+}
+
+.pick__category {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-tomato);
+}
+
+.pick__name {
+  margin: 6px 0 0;
+  font-family: var(--font-display), var(--font-poppins), sans-serif;
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-ink);
+}
+
+.pick__desc {
+  display: -webkit-box;
+  margin: 6px 0 0;
+  overflow: hidden;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--color-muted);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.pick__meta {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+  font-size: 12.5px;
+  color: var(--color-muted);
+}
+.pick__meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.pick__meta svg {
+  color: var(--color-forest);
+}
+
+.pick__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 14px;
+}
+
+.pick__price {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-forest);
+}
+
+.pick__add {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 16px 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-mustard);
+  color: var(--color-forest-dark);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(245, 193, 46, 0.35);
+  transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+.pick__add:hover {
+  transform: translateY(-2px);
+}
+.pick__add--done {
+  background: var(--color-forest);
+  color: #fff;
+  box-shadow: 0 10px 22px rgba(15, 77, 53, 0.3);
+  animation: pick-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes pick-pop {
+  0% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+/* ---------- Dots ---------- */
+.picks__dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+.picks__dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(15, 77, 53, 0.2);
+  cursor: pointer;
+  transition: width 0.35s ease, background 0.35s ease;
+}
+.picks__dot--active {
+  width: 30px;
+  background: var(--color-forest);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+  .picks__track {
+    --per-view: 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .picks {
+    padding: 44px 16px;
+  }
+  .picks__container {
+    padding: 0;
+  }
+  .picks__arrow {
+    width: 44px;
+    height: 44px;
+  }
+  .picks__track {
+    --gap: 16px;
+    --per-view: 1;
+    padding-top: 56px;
+  }
+  .pick {
+    /* show a sliver of the next card so it's obvious you can swipe */
+    flex-basis: 84%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pick,
+  .pick__img,
+  .pick__disc {
+    transition: none;
+  }
+  .picks__track {
+    scroll-behavior: auto;
+  }
+}
